@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Weather Checker</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #292929;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    .window {
+        background: #f2f2f2;
+        padding: 30px;
+        border-radius: 12px;
+        width: 400px;
+        text-align: center;
+    }
+
+    input {
+        padding: 10px;
+        width: 65%;
+        margin-bottom: 15px;
+    }
+
+    button {
+        padding: 10px 15px;
+        cursor: pointer;
+    }
+
+    .loading {
+        display: none;
+        margin-top: 25px;
+    }
+
+    .progress-container {
+        background: #ddd;
+        height: 25px;
+        border: 2px solid #aaa;
+        padding: 3px;
+    }
+
+    .progress-bar {
+        background: #00ba24;
+        height: 100%;
+        width: 0%;
+        transition: width 0.2s;
+    }
+
+    /* Popup overlay */
+    .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .popup {
+        background: white;
+        padding: 30px;
+        width: 350px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 5px 30px #0005;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="window">
+    <h2>AI Weather Checker</h2>
+
+    <form id="weatherForm">
+        <input
+            type="text"
+            id="location"
+            placeholder="Enter a location..."
+            required
+        >
+
+        <button type="submit" id="checkButton">
+            Check Weather
+        </button>
+    </form>
+
+    <div class="loading" id="loading">
+        <h3 id="status">Searching...</h3>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progress"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Result popup -->
+<div class="overlay" id="overlay">
+    <div class="popup">
+        <h2>Weather Results</h2>
+        <p id="result"></p>
+
+        <button onclick="closePopup()">Close</button>
+    </div>
+</div>
+
+<script>
+const form = document.getElementById("weatherForm");
+
+form.addEventListener("submit", function(event) {
+    event.preventDefault();
+    checkWeather();
+});
+
+function checkWeather() {
+    const location =
+        document.getElementById("location").value.trim();
+
+    if (!location) return;
+
+    const loading = document.getElementById("loading");
+    const bar = document.getElementById("progress");
+    const status = document.getElementById("status");
+    const button = document.getElementById("checkButton");
+
+    loading.style.display = "block";
+    button.disabled = true;
+
+    let progress = 0;
+    bar.style.width = "0%";
+
+    const messages = [
+        "Locating " + location + "...",
+        "Connecting to weather satellites...",
+        "Analyzing the clouds...",
+        "Checking atmospheric pressure...",
+        "Calculating forecast...",
+        "Finalizing weather report..."
+    ];
+
+    const interval = setInterval(function() {
+        progress += 2;
+
+        bar.style.width = progress + "%";
+
+        const index = Math.min(
+            Math.floor(progress / 17),
+            messages.length - 1
+        );
+
+        status.textContent = messages[index];
+
+        if (progress >= 100) {
+            clearInterval(interval);
+
+            loading.style.display = "none";
+            button.disabled = false;
+
+            showWeather(location);
+        }
+    }, 100);
+}
+
+function showWeather(location) {
+    document.getElementById("result").textContent =
+        "Idk bro, just look outside.";
+
+    document.getElementById("overlay").style.display = "flex";
+}
+
+function closePopup() {
+    document.getElementById("overlay").style.display = "none";
+}
+</script>
+
+</body>
+</html>
